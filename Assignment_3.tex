@@ -67,11 +67,11 @@
 
 \section{Assignment overview}
 
-\paragraph{Bug scanner} You are expected to implement a scanner to scan all the web vulnerabilities belonging to one particular category. The scanner should be implemented on your own, from scratch. You can use all supporting utility libraries which have the \href{http://opensource.org/licenses/MIT}{MIT} or \href{http://en.wikipedia.org/wiki/BSD_licenses}{BSD} license but the logic of the scanner needs to be implemented by you.
+\paragraph{Bug scanner} You are expected to implement a scanner to scan all the web vulnerabilities belonging to one particular category. The scanner should be implemented on your own, from scratch. You are restricted to use only utility libraries which have the \underline{\href{http://opensource.org/licenses/MIT}{MIT} or \href{http://en.wikipedia.org/wiki/BSD_licenses}{BSD} license}. Nonetheless, the logic of the scanner needs to be implemented by you.
 
-\textit{Implementation Language:} Only {\tt Node.js} or {\tt Python}.
+\textit{Implementation Language:} \underline{Only {\tt Node.js} or {\tt Python}}.
 
-\paragraph{Vulnerability categories} Each scanner will scan a particular bug category. All the categories are listed in Table~\ref{tab:bug-categories}. To make sure that every category is touched, we limit the number of groups working in each category as in Table~\ref{tab:bug-categories}. At 23.00 PM on Tuesday 17 March, there will be a post in IVLE forum for you to select the category you want to work on. This will be a first-come first-serve rule, the group makes a reply to that post earlier will get their desired category. Each group should make only one reply to select their category. At 23:30 PM that day, the TA will finalize the bug category distribution. The available categories will be randomly assigned to the groups who haven't made their selection.
+\paragraph{Vulnerability categories} Each scanner will scan a particular bug category. All the categories are listed in Table~\ref{tab:bug-categories}. To make sure that every category is touched, we limit the number of groups working in each category as in Table~\ref{tab:bug-categories}. At 22.00 PM on Tuesday 17 March, there will be a post in IVLE forum for you to select the category you want to work on. This will be a first-come first-serve rule, the group makes a reply to that post earlier will get their desired category. Each group should make only one reply to select their category. At 23:30 PM that day, the TA will finalize the bug category distribution. The available categories will be randomly assigned to the groups who haven't made their selection.
 
 \paragraph{Benchmark creation} A public benchmark will be given to you so that you can test your scanner. However, we expect you to create your own benchmark while building the scanner. The benckmark can be constructed as simple as the testcases we gave you in Assignment 2, or can be the real bugs reported in real web applications.
 We will ask you to submit your benchmark along with your scanner. It will be graded and account for 5 points.
@@ -83,14 +83,14 @@ We will ask you to submit your benchmark along with your scanner. It will be gra
 Category & \specialcell{Reflected\\ XSS} & \specialcell{Persistent\\ XSS} & \specialcell{CSRF \\flaw} & \specialcell{SQL \\Injection} & \specialcell{Sever side \\Code \\Injection} & \specialcell{Directory \\traversal} & \specialcell{Unvalidated\\ redirection} & \specialcell{Cookies \\management} \\ \hline
 \specialcell{No. of \\maximum \\groups} & 2 & 2 & 3 & 2 & 2 & 2 & 2 & 2 \\ \hline
 \end{tabular}
-\caption{Bug categories and number of maximum groups can work on each category. Note that Server side code injection and Directory traversal are included in one scanner.}
+\caption{Bug categories and number of maximum groups can work on each category.}
 \label{tab:bug-categories}
 \end{table}
 
-\section{Scanner description}
+\section{Scanner structure}
 This is a general description about the structure of a scanner. 
 You should follow all the steps below while building your scanner. 
-Typically, the scanner will consist of 4 phases. The communication between these phases {\em must} be via files in {\tt JSON} format.
+Typically, the scanner will consist of 4 phases. The communication between these phases \underline{{\em must} be via files in {\tt JSON} format}.
 
 \subsection{Crawling and identification of Injection points in web pages}
 \paragraph{Crawling web pages} The aim of this phase is to find out as many pages in the web application as possible. The crawling function takes in the start URL, the depth to crawl (optional), maximum number of URLs (optional).
@@ -153,10 +153,57 @@ Failing to automate any component in this script will not get full grade.
 
 This phase is also to make sure that your scanner will not report false positive exploits --- exploits that are not exploitable. We will deduct up to 5 points if your scanner raises too many false positive reports.
 
+
+\section{Grading}
+This assignment accounts for 50\% (50 points) of your final grade. The following scheme will be applied when we grade your scanner.
+	\begin{itemize}
+	\item Did you follow the given code structure? [{\bf 10 points}] --- TA will check the output format of each of the 4 steps manually.
+	\item How many bugs does your scanner automatically find on the given (public) benchmark? [{\bf 10 points}]
+	\item Additional benchmark/testcases that you created to test/show the strengths of your scanner? [{\bf 5 points}]
+	\item How many bugs does your scanner find from our hidden benchmark? [{\bf 20 points}]
+	\item Does your scanner raise false positives on our hidden benchmark [{\bf 5 points}] if no FP raised. We deduct 0.5 points for each FP raised.
+	\end{itemize}
+
+More details on how the grading is conducted will be updated later.
+
+\section{Deliverables and Submission}
+\label{deliverables}
+You are required to submit
+\begin{itemize}
+	\item Your scanner source code, with proper documentation about how to compile, how to use, and other requirements. Your group should include the scanner source code, documentation in a zip file {\tt GROUP\_X.zip} and submit it to IVLE.
+	
+	\item Your own benchmark with a proper report similar to what you received from us for the public benchmark. The new benchmark should be included in the VM we gave you in this assignment, and submitted back to us. Please leave every instruction/information we need to know in the VM readme so that we can grade it properly.
+
+	\item The results of your scanner for a) the given benchmark and b) your own benchmark (if available), including the final json output and the exploitable script.	
+\end{itemize}
+
+
+\section{Supporting resources}
+\paragraph{Public benchmark} You will be given a VM which includes all the bugs. We have enabled FTP on 
+the course server so that you will be able to access it. To download 
+the resources via FTP, use the following URL: 
+\href{ftp://group0@andromeda.d2.comp.nus.edu.sg}{\tt ftp://group0@andromeda.d2.comp.nus.edu.sg.}
+The password for accessing the FTP is \texttt{group0}. Please fetch the VM in the folder {\tt Assignment\_3}. A proper description of the VM and benchmark can be found in that folder also.
+
+\paragraph{Code template} A simple code template in {\tt Python} can be fetched from this \href{https://github.com/will_udpate_later}{repository}.
+
+\section{Miscellany}
+\paragraph{Important dates}
+\begin{itemize}
+	\item Category selection:  Tuesday, 17 March 2015,  22:00 SGT.
+	\item Submission deadline: Monday, 20 April 2015, 23:59 SGT.
+\end{itemize}
+
+\paragraph{Contact}
+\begin{itemize}
+\item TAs : Loi Luu \& Li Guodong \href{mailto:cs5331.ta@gmail.com}{(cs5331.ta@gmail.com)}
+\item IVLE forum
+\end{itemize}
+
 \section{Scope and format of exploit in each category}
 \label{exploit-format}
 \subsection{Reflected XSS}
-\paragraph{Scope} You are expected to execute an alert in the context of the current domain and determine whether it is exploitable with Chrome XSS-auditor turned on. 
+\paragraph{Scope} You are expected to execute an alert in the context of the current domain. It is more interesting, but not required, that your scanner can determine whether it is exploitable with Chrome XSS-auditor turned on. 
 
 \paragraph{Final exploit format\\}
 \begin{lstlisting}[language=json,firstnumber=1]
@@ -173,7 +220,7 @@ This phase is also to make sure that your scanner will not report false positive
 \end{lstlisting}
 
 \subsection{Persistent XSS}
-\paragraph{Scope} Execute an alert in the context of the current domain. You can assume that the browser-XSS-auditor is turned off.
+\paragraph{Scope} Execute an alert in the context of the current domain.
 
 \paragraph{Final exploit format\\}
 
@@ -190,7 +237,7 @@ This phase is also to make sure that your scanner will not report false positive
 \end{lstlisting}
 
 \subsection{CSRF} 
-\paragraph{Scope} Carry out a sensitive operation on behalf of other users by exploiting the lack of proper csrf token/mechanism. Sensitive operation is the operation operated on sensitive data and generally is carried out by sensitive form. Note that normal form can be unprotected by CSRF if there is nothing sensitive that can be achieved by submitting that form.
+\paragraph{Scope} Carry out a sensitive operation on behalf of other users by exploiting the lack of proper csrf token/mechanism. Sensitive operation is the operation operated on sensitive data and it is left to you to define which data is sensitive. Note that normal form can be unprotected by CSRF if there is nothing sensitive that can be achieved by submitting that form.
 
 
 \paragraph{Final exploit format} You will need to output the page and name of the sensitive form which is vulnerable to CSRF attack. The format of the output should look similar to this.
@@ -206,7 +253,7 @@ This phase is also to make sure that your scanner will not report false positive
 
 \subsection{SQL Injection}
 % // Extra points for finding out SQL Injections using differential timing / response analysis
-\paragraph{Scope} Output a database error message to the screen by injecting a syntax error command.
+\paragraph{Scope} Output a database error message to the user's screen by injecting a SQL syntax error query.
 
 \paragraph{Final exploit format} Your output for phase 3 should look similar to this.
 
@@ -284,7 +331,7 @@ Navigate the page to \href{https://google.com}{https://google.com}.
 
 \subsection{Cookies management}
 \paragraph{Scope of exploit}
-You are expected to get the cookie of a logged in user. Your scanner should cover the following vulnerability sub-categories to steal the cookie or fix the session of the user.
+You are expected to get the cookie of a logged in user. Your exploit should raise no SSL error indicator/warnings which user can see. Your scanner should cover the following vulnerability sub-categories to steal the cookie or fix the session cookie of the user. 
 	\begin{itemize}
 		\item Session Fixation
 		\item Session Hijacking, e.g., by MITM attack
@@ -313,49 +360,4 @@ The exploit script should be a selenium script which
 \item Performs the attack as the attacker (the attack can belong to any of the above 3 sub-categories)
 \item Logs in as the victim or fix the session for the victim
 \end{enumerate}
-
-
-
-\section{Deliverables and Submission}
-\label{deliverables}
-You are required to submit
-\begin{itemize}
-	\item Your scanner source code, with proper documentation about how to compile, how to use, format output of each phase, and other requirements.
-	\item The results of your scanner for the given benchmark and your own benchmark (if any), including the final json output and the exploitable script.
-	\item Your own benchmark with a proper report similar to what you received from us for the public benchmark. The new benchmark should be included in the VM we gave you in this assignment, and submitted back to us. Please leave every instruction/information we need to know in the VM readme so that we can grade it properly.
-\end{itemize}
-
-\section{Grading}
-This assignment accounts for 50\% (50 points) of your final grade. The following scheme will be applied when we grade your scanner.
-	\begin{itemize}
-	\item Did you follow the given code structure? [10 points] --- TA will check the output format of each of the 4 steps manually.
-	\item How many bugs does your scanner automatically find on the given (public) benchmark? [10 points]
-	\item Additional benchmark/testcases that you created to test your scanner? [5 points]
-	\item How many bugs does your scanner find from our hidden benchmark? [20 points]
-	\item Does your scanner raise false positives on our hidden benchmark [5 points - 0.5 points for each FP raised]?
-	\end{itemize}
-
-More details on how the grading is conducted will be updated later.
-
-\section{Supporting resources}
-\paragraph{Public benchmark} You will be given a VM which includes all the bugs. We have enabled FTP on 
-the course server so that you will be able to access it. To download 
-the resources via FTP, use the following URL: 
-\href{ftp://group0@andromeda.d2.comp.nus.edu.sg}{\tt ftp://group0@andromeda.d2.comp.nus.edu.sg.}
-The password for accessing the FTP is \texttt{group0}. Please fetch the VM in the folder {\tt Assignment\_3}. A proper description of the VM and benchmark can be found in that folder also.
-
-\paragraph{Code template} A simple code template in {\tt Python} can be fetched from this \href{https://github.com/will_udpate_later}{repository}.
-
-\section{Miscellany}
-\paragraph{Important dates}
-\begin{itemize}
-	\item Category selection:  Tuesday, 17 March 2015,  23:00 PM SGT.
-	\item Submission deadline: Monday, 20 April 2015, 23:59 PM SGT.
-\end{itemize}
-
-\paragraph{Contact}
-\begin{itemize}
-\item TAs : Loi Luu \& Li Guodong \href{mailto:cs5331.ta@gmail.com}{(cs5331.ta@gmail.com)}
-\item IVLE forum
-\end{itemize}
 \end{document}
