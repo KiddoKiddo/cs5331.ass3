@@ -1,0 +1,351 @@
+\documentclass{article}[10pt]
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+
+\title{CS5331 - Assignment 3: Scan them all!}
+\date{Due date: Monday, 20 April 2015, 23:59 pm SGT}
+
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage[colorlinks = true,
+            linkcolor = blue,
+            urlcolor  = blue,
+            citecolor = blue,
+            anchorcolor = blue]{hyperref}
+
+\usepackage{version}
+\usepackage{dirtree}
+\newcommand{\specialcell}[2][l]{%
+  \begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}
+\usepackage{bera}% optional: just to have a nice mono-spaced font
+\usepackage{listings}
+\usepackage{xcolor}
+
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
+% Include questions but not solutions:
+\includeversion{question}\includeversion{solution}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Assignment overview}
+
+\paragraph{Bug scanner} You are expected to implement a scanner to scan all the web vulnerabilities belonging to one particular category. The scanner should be implemented on your own, from scratch. You can use all supporting utility libraries which have the \href{http://opensource.org/licenses/MIT}{MIT} or \href{http://en.wikipedia.org/wiki/BSD_licenses}{BSD} license but the logic of the scanner needs to be implemented by you.
+
+\textit{Implementation Language:} Only {\tt Node.js} or {\tt Python}.
+
+\paragraph{Vulnerability categories} Each scanner will scan a particular bug category. All the categories are listed in Table~\ref{tab:bug-categories}. To make sure that every category is touched, we limit the number of groups working in each category as in Table~\ref{tab:bug-categories}. At 23.00 PM on Tuesday 17 March, there will be a post in IVLE forum for you to select the category you want to work on. This will be a first-come first-serve rule, the group makes a reply to that post earlier will get their desired category. Each group should make only one reply to select their category. At 23:30 PM that day, the TA will finalize the bug category distribution. The available categories will be randomly assigned to the groups who haven't made their selection.
+
+\paragraph{Benchmark creation} A public benchmark will be given to you so that you can test your scanner. However, we expect you to create your own benchmark while building the scanner. The benckmark can be constructed as simple as the testcases we gave you in Assignment 2, or can be the real bugs reported in real web applications.
+We will ask you to submit your benchmark along with your scanner. It will be graded and account for 5 points.
+
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|l|l|l|l}
+\hline
+Category & \specialcell{Reflected\\ XSS} & \specialcell{Persistent\\ XSS} & \specialcell{CSRF \\flaw} & \specialcell{SQL \\Injection} & \specialcell{Sever side \\Code Injection\\ \& Directory \\traversal} & \specialcell{Unvalidated\\ redirection} & \specialcell{Cookies \\management} \\ \hline
+\specialcell{No. of \\maximum \\groups} & 3 & 3 & 3 & 2 & 2 & 2 & 2 \\ \cline{1-8}
+\end{tabular}
+\caption{Bug categories and number of maximum groups can work on each category. Note that Server side code injection and Directory traversal are included in one scanner.}
+\label{tab:bug-categories}
+\end{table}
+
+\section{Scanner description}
+This is a general description about the structure of a scanner. 
+You should follow all the steps below while building your scanner. 
+Typically, the scanner will consist of 4 phases. The communication between these phases {\em must} be via files in {\tt JSON} format.
+
+\subsection{Crawling and identification of Injection points in web pages}
+\paragraph{Crawling web pages} The aim of this phase is to find out as many pages in the web application as possible. The crawling function takes in the start URL, the depth to crawl (optional), maximum number of URLs (optional).
+You can use open source crawlers like \href{http://scrapy.org/}{{\tt Scrapy}} or implement your own crawler. We encourage you to use {\tt Scrapy}, so that you can later on discuss on forum about how to do things with {\tt Scrapy}. We also prepare a simple {\tt Scrapy} script to crawl one example in the code base that we give you. You can consider it as one reference to get used to with {\tt Scrapy}. Nonetheless, there are tons of helpful tutorials about how to use Scrapy on the Internet.
+
+Remember that most of the pages in your application are only available to the scanner once you log in. You are given the account credentials for all the apps in the {\bf readme} file in the VM. Use this information to configure your crawler to scan for more pages after logging in. The more pages you are able to crawl for, the more vulnerabilities your scanner will be able to find.
+
+\paragraph{Identification of Injection points}
+After crawling a web page, you will need to identify injection points in each of the downloaded pages. An attacker can inject his attack vector at numerous points. Some of the injection points are (but are not limited to):
+	\begin{itemize}
+	\item GET requests parameters
+	\item POST requests parameters
+	\item Request Headers (including cookies)
+	\end{itemize}
+
+The json output file, which will be used in the subsequent phases will look similar to the one given below:
+\begin{lstlisting}[language=json,firstnumber=1]
+[{
+	"/page.html": [{
+		"type":"GET",
+		"param":"foo"
+	}],
+	"/page2.html":[{
+		"type": "Header",
+		"param":"X-Requested-By"
+	}]
+}]
+\end{lstlisting}
+
+\subsection{Payload generation}
+This phase is specific to your vulnerability category. These payloads will be injected in the injection points that you have identified in the previous phase. 
+This phase should return a set of exploits to be tested. Pass information that you think would be necessary for you to better choose the exploits you want to try out. For example, a SQL Injection scanner could take in information such as the Database type, version and the current server information to return the payloads (no point returning No-SQL payloads for a MYSQL Database). The output of this phase for a SQL Injection Scanner for a LAMP installation would be something like what is shown below
+
+\begin{lstlisting}[language=json,firstnumber=1]
+["' or '1'='1", "your other payloads", ...]
+\end{lstlisting}
+
+\subsection{Payload Injection}
+The next step would be to inject every payload generated in Phase 2 into your injection points discovered in Phase 1. After each injection, you need to find out which of these (injection point, payload) pairs are exploitable. The output of this phase would be the list of confirmed exploits in the website. The output format for each vulnerability is described in Section~\ref{exploit-format} of the handout. A sample output for the SQL Injection scanner will look like this.
+\begin{lstlisting}[language=json,firstnumber=1]
+[{
+	"http://example.com/index.html" : [{
+		method: GET/POST,
+		params: 
+			[
+			key: param1
+			value: ' or '1'='1
+			]
+		}]
+}]
+\end{lstlisting}
+
+\subsection{Generate automated verification script} 
+For each of the exploits you have printed in Phase 3, you need to generate an
+automated script which proves that the exploit is indeed vulnerable. Typically, you will have to demonstrate that you can achieve the scope of exploit for each category mentioned in Section~\ref{exploit-format}. For some category, we will discuss more on how to demonstrate the exploit. The
+generated scripts from this phase should be similar to the scripts that you
+generated for the previous assignment. You can consider using
+\href{http://www.seleniumhq.org/}{Selenium} to make all the process automated.
+Failing to automate any component in this script will not get full grade.
+
+This phase is also to make sure that your scanner will not report false positive exploits --- exploits that are not exploitable. We will deduct up to 5 points if your scanner raises too many false positive reports.
+
+\section{Scope and format of exploit in each category}
+\label{exploit-format}
+\subsection{Reflected XSS}
+\paragraph{Scope} You are expected to execute an alert in the context of the current domain and determine whether it is exploitable with Chrome XSS-auditor turned on. 
+
+\paragraph{Final exploit format\\}
+\begin{lstlisting}[language=json,firstnumber=1]
+[{
+	"http://example.com/index.html" : [{
+		method: GET/POST
+		params: 
+		[
+			key: param1
+			value: attack1
+		]
+	}]
+}]
+\end{lstlisting}
+
+\subsection{Persistent XSS}
+\paragraph{Scope} Execute an alert in the context of the current domain. You can assume that the browser-XSS-auditor is turned off.
+
+\paragraph{Final exploit format\\}
+
+\begin{lstlisting}[language=json,firstnumber=1]
+[{
+	method: GET/POST,
+	params: 
+	[
+		key: param1
+		value: attack1
+	],
+	reflected_page: "http://example.com/page2.html"
+}]
+\end{lstlisting}
+
+\subsection{CSRF} 
+\paragraph{Scope} Carry out a sensitive operation on behalf of other users by exploiting the lack of proper csrf token/mechanism. Sensitive operation is the operation operated on sensitive data and generally is carried out by sensitive form. Note that normal form can be unprotected by CSRF if there is nothing sensitive that can be achieved by submitting that form.
+
+
+\paragraph{Final exploit format} You will need to output the page and name of the sensitive form which is vulnerable to CSRF attack. The format of the output should look similar to this.
+
+\begin{lstlisting}[language=json,firstnumber=1]
+[{
+	url: "http://example.com/page.html"
+	name: "form1"
+}]
+\end{lstlisting}
+
+\paragraph{Exploit verification} We leave how to validate the attack open ended and let the group decide. One possible approach is to demonstrate that user A can submit a sensitive form on behalf of B, then show the information changed from B perspective before and after A submits the form.
+
+\subsection{SQL Injection}
+% // Extra points for finding out SQL Injections using differential timing / response analysis
+\paragraph{Scope} Output a database error message to the screen by injecting a syntax error command.
+
+\paragraph{Final exploit format} Your output for phase 3 should look similar to this.
+
+\begin{lstlisting}[language=json,firstnumber=1]
+[{
+	"http://example.com/index.html" : [{
+		method: GET/POST,
+		params: 
+		[
+			key: param1
+			value: ' or '1'='1
+		]
+	}]
+}]
+\end{lstlisting}
+\subsection{Server Side Code Injection \& Directory Traversals}
+There are a huge overlap between SSCI and DT, thus we consider the two categories as one. Your scanner should look for bugs in both categories.
+
+\subsubsection{Server Side Code Injection}
+This category includes all variants of Local file inclusion, remote file inclusion, PHP code injection attacks.
+
+\paragraph{Scope}
+Inject a script (through LFI / RFI / Php code injection) which echoes the string "pawned" into the page
+
+\paragraph{Final exploit format\\}
+
+\begin{lstlisting}[language=json,firstnumber=1]
+[{
+	"http://example.com/index.html" : [{
+		method: GET/POST
+		params: 
+		[
+			key: param1,
+			value: ";echo "pawned"
+		]
+	}]
+}]
+\end{lstlisting}
+\subsubsection{Directory traversals}
+\paragraph{Scope}
+Page should have the contents of the /etc/passwd file included in the response
+
+\paragraph{Final exploit format\\}
+\begin{lstlisting}[language=json,firstnumber=1]
+[{
+	"http://example.com/index.html" : [{
+		method: GET/POST
+		params: 
+		[
+			key: param1,
+			value: ../../etc/passwd
+		]
+	}]
+}]
+\end{lstlisting}
+
+\subsection{Unvalidated redirects}
+\paragraph{Scope}
+Navigate the page to \href{https://google.com}{https://google.com}.
+
+\paragraph{Final exploit format\\} 
+\begin{lstlisting}[language=json,firstnumber=1]
+[{	
+	"http://example.com/index.html" : [{
+		method: GET/POST,
+		params: 
+		[
+			key: param1,
+			value: https://google.com
+		]
+	}]
+}]
+\end{lstlisting}
+
+% \subsection{Directory Traversals}
+
+\subsection{Cookies management}
+\paragraph{Scope of exploit}
+You are expected to get the cookie of a logged in user. Your scanner should cover the following vulnerability sub-categories to steal the cookie or fix the session of the user.
+	\begin{itemize}
+		\item Session Fixation
+		\item Session Hijacking, e.g., by MITM attack
+		\item Predictable Cookies
+	\end{itemize}
+
+\paragraph{Final exploit format}
+You need to report the page and the name of the cookie which makes the app vulnerable to any of the above mentioned attacks (the session cookie) and the page on which it is found. Note that you only need to report each cookie only once. For example, if the same session cookie is found on multiple pages of the application, you only need to report each cookie once. 
+
+\begin{lstlisting}[language=json,firstnumber=1]
+[{
+	page: http://example.com/index.html,
+	cookie:[{
+		name:PHPSSESSID,
+		secure: true/false, // the secure flag
+		httpOnly: true/false, // the httpOnly flag
+		attack: sessionFixation || sessionHijacking || predictableCookies
+	}]
+}]
+\end{lstlisting}
+
+\paragraph{Verification}
+The exploit script should be a selenium script which
+\begin{enumerate}
+\item automates the login of the victim (you can use the script that has been provided to you for Phase 1)
+\item perform the attack as the attacker (using any of the 3 strategies mentioned above)
+\item Log in as the victim or fix the session for the victim
+\end{enumerate}
+
+\section{Grading}
+This assignment accounts for 50\% (50 points) of your final grade. The following scheme will be applied when we grade your scanner.
+	\begin{itemize}
+	\item Did you follow the given code structure? [10 points] --- TA will check the output format of each of the 4 steps manually.
+	\item How many bugs does your scanner automatically find on the given (public) benchmark? [10 points]
+	\item Additional benchmark/testcases that you created to test your scanner? [5 points]
+	\item How many bugs does your scanner find from our hidden benchmark? [20 points]
+	\item Does your scanner raise false positives on our hidden benchmark [5 points - 0.5 points for each FP raised]?
+	\end{itemize}
+
+More details on how the grading is conducted will be updated later.
+
+
+\section{Supporting resources}
+\paragraph{Public benchmark} You will be given a VM which includes all the bugs. We have enabled FTP on 
+the course server so that you will be able to access it. To download 
+the resources via FTP, use the following URL: 
+\href{ftp://group0@andromeda.d2.comp.nus.edu.sg}{\tt ftp://group0@andromeda.d2.comp.nus.edu.sg.}
+The password for accessing the FTP is \texttt{group0}. Please fetch the VM in the folder {\tt Assignment\_3}. A proper description of the VM and benchmark can be found in that folder also.
+
+\paragraph{Code template} A simple code template in {\tt Python} can be fetched from this \href{https://github.com/will_udpate_later}{repository}.
+
+\section{Miscellany}
+\paragraph{Important dates}
+\begin{itemize}
+	\item Category selection:  Tuesday, 17 March 2015,  23:00 PM SGT.
+	\item Submission deadline: Monday, 20 April 2015, 23:59 PM SGT.
+\end{itemize}
+
+\paragraph{Contact}
+\begin{itemize}
+\item TAs : Loi Luu \& Li Guodong \href{mailto:cs5331.ta@gmail.com}{(cs5331.ta@gmail.com)}
+\item IVLE forum
+\end{itemize}
+\end{document}
