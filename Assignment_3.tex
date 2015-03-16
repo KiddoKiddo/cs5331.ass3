@@ -309,10 +309,21 @@ You need to report the page and the name of the cookie which makes the app vulne
 \paragraph{Verification}
 The exploit script should be a selenium script which
 \begin{enumerate}
-\item automates the login of the victim (you can use the script that has been provided to you for Phase 1)
-\item perform the attack as the attacker (using any of the 3 strategies mentioned above)
-\item Log in as the victim or fix the session for the victim
+\item Automates the login of the victim (you can use the script that has been provided to you in Phase 1)
+\item Performs the attack as the attacker (the attack can belong to any of the above 3 sub-categories)
+\item Logs in as the victim or fix the session for the victim
 \end{enumerate}
+
+
+
+\section{Deliverables and Submission}
+\label{deliverables}
+You are required to submit
+\begin{itemize}
+	\item Your scanner source code, with proper documentation about how to compile, how to use, format output of each phase, and other requirements.
+	\item The results of your scanner for the given benchmark and your own benchmark (if any), including the final json output and the exploitable script.
+	\item Your own benchmark with a proper report similar to what you received from us for the public benchmark. The new benchmark should be included in the VM we gave you in this assignment, and submitted back to us. Please leave every instruction/information we need to know in the VM readme so that we can grade it properly.
+\end{itemize}
 
 \section{Grading}
 This assignment accounts for 50\% (50 points) of your final grade. The following scheme will be applied when we grade your scanner.
@@ -325,7 +336,6 @@ This assignment accounts for 50\% (50 points) of your final grade. The following
 	\end{itemize}
 
 More details on how the grading is conducted will be updated later.
-
 
 \section{Supporting resources}
 \paragraph{Public benchmark} You will be given a VM which includes all the bugs. We have enabled FTP on 
