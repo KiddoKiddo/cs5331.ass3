@@ -138,6 +138,10 @@ This phase should return a set of exploits to be tested. Pass information that y
 \end{lstlisting}
 
 \subsection{Payload Injection}
+\begin{itemize}
+	\item \textbf{Input}: Output of Phase 1 and Phase 2.
+	\item \textbf{Output}: a JSON file(s) of all possible exploits.
+\end{itemize}
 The next step would be to inject every payload generated in Phase 2 into your injection points discovered in Phase 1. After each injection, you need to find out which of these (injection point, payload) pairs are exploitable. The output of this phase would be the list of \textbf{confirmed} exploits in the website. The output format for each vulnerability is described in Section~\ref{exploit-format} of the handout. A sample output for the SQL Injection scanner will look like this.
 \begin{lstlisting}[language=json,firstnumber=1]
 [{
@@ -153,6 +157,10 @@ The next step would be to inject every payload generated in Phase 2 into your in
 \end{lstlisting}
 
 \subsection{Generate automated verification script} 
+\begin{itemize}
+	\item \textbf{Input}: Output of Phase 3
+	\item \textbf{Output}: list of Selenium scripts to automate the validated exploit.
+\end{itemize}
 For each of the exploits you have printed in Phase 3, you need to generate an
 automated script which proves that the exploit is indeed vulnerable. Typically, you will have to demonstrate that you can achieve the scope of exploit for the category you have chosen in Section~\ref{exploit-format}. For some categories, we will discuss more on how to demonstrate the exploit. The
 generated scripts from this phase should be similar to the scripts that you
