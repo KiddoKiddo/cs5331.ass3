@@ -77,10 +77,11 @@
 We will ask you to submit your benchmark along with your scanner. It will be graded and account for 5 points.
 
 \begin{table}[h]
-\begin{tabular}{|l|l|l|l|l|l|l|l|l}
+\small
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|l}
 \hline
-Category & \specialcell{Reflected\\ XSS} & \specialcell{Persistent\\ XSS} & \specialcell{CSRF \\flaw} & \specialcell{SQL \\Injection} & \specialcell{Sever side \\Code Injection\\ \& Directory \\traversal} & \specialcell{Unvalidated\\ redirection} & \specialcell{Cookies \\management} \\ \hline
-\specialcell{No. of \\maximum \\groups} & 3 & 3 & 3 & 2 & 2 & 2 & 2 \\ \cline{1-8}
+Category & \specialcell{Reflected\\ XSS} & \specialcell{Persistent\\ XSS} & \specialcell{CSRF \\flaw} & \specialcell{SQL \\Injection} & \specialcell{Sever side \\Code \\Injection} & \specialcell{Directory \\traversal} & \specialcell{Unvalidated\\ redirection} & \specialcell{Cookies \\management} \\ \hline
+\specialcell{No. of \\maximum \\groups} & 2 & 2 & 3 & 2 & 2 & 2 & 2 & 2 \\ \hline
 \end{tabular}
 \caption{Bug categories and number of maximum groups can work on each category. Note that Server side code injection and Directory traversal are included in one scanner.}
 \label{tab:bug-categories}
@@ -221,14 +222,14 @@ This phase is also to make sure that your scanner will not report false positive
 	}]
 }]
 \end{lstlisting}
-\subsection{Server Side Code Injection \& Directory Traversals}
-There are a huge overlap between SSCI and DT, thus we consider the two categories as one. Your scanner should look for bugs in both categories.
+% \subsection{Server Side Code Injection \& Directory Traversals}
+% There are a huge overlap between SSCI and DT, thus we consider the two categories as one. Your scanner should look for bugs in both categories.
 
-\subsubsection{Server Side Code Injection}
+\subsection{Server Side Code Injection}
 This category includes all variants of Local file inclusion, remote file inclusion, PHP code injection attacks.
 
 \paragraph{Scope}
-Inject a script (through LFI / RFI / Php code injection) which echoes the string "pawned" into the page
+Inject a script (through LFI / RFI / Php code injection) which echoes the string ``pawned" into the page
 
 \paragraph{Final exploit format\\}
 
@@ -244,7 +245,8 @@ Inject a script (through LFI / RFI / Php code injection) which echoes the string
 	}]
 }]
 \end{lstlisting}
-\subsubsection{Directory traversals}
+
+\subsection{Directory traversals}
 \paragraph{Scope}
 Page should have the contents of the /etc/passwd file included in the response
 
@@ -279,8 +281,6 @@ Navigate the page to \href{https://google.com}{https://google.com}.
 	}]
 }]
 \end{lstlisting}
-
-% \subsection{Directory Traversals}
 
 \subsection{Cookies management}
 \paragraph{Scope of exploit}

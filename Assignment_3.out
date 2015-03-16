@@ -9,11 +9,10 @@
 \BOOKMARK [2][-]{subsection.3.2}{Persistent XSS}{section.3}% 9
 \BOOKMARK [2][-]{subsection.3.3}{CSRF}{section.3}% 10
 \BOOKMARK [2][-]{subsection.3.4}{SQL Injection}{section.3}% 11
-\BOOKMARK [2][-]{subsection.3.5}{Server Side Code Injection \046 Directory Traversals}{section.3}% 12
-\BOOKMARK [3][-]{subsubsection.3.5.1}{Server Side Code Injection}{subsection.3.5}% 13
-\BOOKMARK [3][-]{subsubsection.3.5.2}{Directory traversals}{subsection.3.5}% 14
-\BOOKMARK [2][-]{subsection.3.6}{Unvalidated redirects}{section.3}% 15
-\BOOKMARK [2][-]{subsection.3.7}{Cookies management}{section.3}% 16
-\BOOKMARK [1][-]{section.4}{Grading}{}% 17
-\BOOKMARK [1][-]{section.5}{Supporting resources}{}% 18
-\BOOKMARK [1][-]{section.6}{Miscellany}{}% 19
+\BOOKMARK [2][-]{subsection.3.5}{Server Side Code Injection}{section.3}% 12
+\BOOKMARK [2][-]{subsection.3.6}{Directory traversals}{section.3}% 13
+\BOOKMARK [2][-]{subsection.3.7}{Unvalidated redirects}{section.3}% 14
+\BOOKMARK [2][-]{subsection.3.8}{Cookies management}{section.3}% 15
+\BOOKMARK [1][-]{section.4}{Grading}{}% 16
+\BOOKMARK [1][-]{section.5}{Supporting resources}{}% 17
+\BOOKMARK [1][-]{section.6}{Miscellany}{}% 18
