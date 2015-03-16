@@ -93,6 +93,10 @@ You should follow all the steps below while building your scanner.
 Typically, the scanner will consist of 4 phases. The communication between these phases \underline{{\em must} be via files in {\tt JSON} format}.
 
 \subsection{Crawling and identification of Injection points in web pages}
+\begin{itemize}
+	\item \textbf{Input}: list of web URLs.
+	\item \textbf{Output}: a JSON file(s) of injection points.
+\end{itemize}
 \paragraph{Crawling web pages} The aim of this phase is to find out as many pages in the web application as possible. The crawling function takes in the start URL, the depth to crawl (optional), maximum number of URLs (optional).
 You can use open source crawlers like \href{http://scrapy.org/}{{\tt Scrapy}} or implement your own crawler. We encourage you to use {\tt Scrapy}, so that you can later on discuss on forum about how to do things with {\tt Scrapy}. We also prepare a simple {\tt Scrapy} script to crawl one example in the code base that we give you. You can consider it as one reference to get used to with {\tt Scrapy}. Nonetheless, there are tons of helpful tutorials about how to use Scrapy on the Internet.
 
@@ -121,6 +125,10 @@ The json output file, which will be used in the subsequent phases will look simi
 \end{lstlisting}
 
 \subsection{Payload generation}
+\begin{itemize}
+	\item \textbf{Input}: Bug category.
+	\item \textbf{Output}: a JSON file(s) of all possible payloads.
+\end{itemize}
 This phase is specific to your vulnerability category. These payloads will be injected in the injection points that you have identified in the previous phase. 
 This phase should return a set of exploits to be tested. Pass information that you think would be necessary for you to better choose the exploits you want to try out. For example, a SQL Injection scanner could take in information such as the Database type, version and the current server information to return the payloads (no point returning No-SQL payloads for a MYSQL Database). The output of this phase for a SQL Injection Scanner for a LAMP installation would be something like what is shown below
 
@@ -185,7 +193,7 @@ the resources via FTP, use the following URL:
 \href{ftp://group0@andromeda.d2.comp.nus.edu.sg}{\tt ftp://group0@andromeda.d2.comp.nus.edu.sg.}
 The password for accessing the FTP is \texttt{group0}. Please fetch the VM in the folder {\tt Assignment\_3}. A proper description of the VM and benchmark can be found in that folder also.
 
-\paragraph{Code template} A simple code template in {\tt Python} can be fetched from this \href{https://github.com/will_udpate_later}{repository}.
+\paragraph{Code template} A sample crawler code snippet in {\tt Python} can be fetched from this \href{https://github.com/Dexter-JS/Scanner}{repository}.
 
 \section{Miscellany}
 \paragraph{Important dates}
