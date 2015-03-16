@@ -67,13 +67,13 @@
 
 \section{Assignment overview}
 
-\paragraph{Bug scanner} You are expected to implement a scanner to scan all the web vulnerabilities belonging to one particular category. The scanner should be implemented on your own, from scratch. You are restricted to use only utility libraries which have the \underline{\href{http://opensource.org/licenses/MIT}{MIT} or \href{http://en.wikipedia.org/wiki/BSD_licenses}{BSD} license}. Nonetheless, the logic of the scanner needs to be implemented by you.
+\paragraph{Bug scanner} You are expected to implement a scanner to scan all the web vulnerabilities belonging to one particular category. The scanner should be implemented on your own, from scratch. You are restricted to use only utility libraries which have the \underline{\href{http://opensource.org/licenses/MIT}{MIT} or \href{http://en.wikipedia.org/wiki/BSD_licenses}{BSD} license}. Specifically, the core logic of the scanner needs to be implemented by you.
 
 \textit{Implementation Language:} \underline{Only {\tt Node.js} or {\tt Python}}.
 
-\paragraph{Vulnerability categories} Each scanner will scan a particular bug category. All the categories are listed in Table~\ref{tab:bug-categories}. To make sure that every category is touched, we limit the number of groups working in each category as in Table~\ref{tab:bug-categories}. At 22.00 PM on Tuesday 17 March, there will be a post in IVLE forum for you to select the category you want to work on. This will be a first-come first-serve rule, the group makes a reply to that post earlier will get their desired category. Each group should make only one reply to select their category. At 23:30 PM that day, the TA will finalize the bug category distribution. The available categories will be randomly assigned to the groups who haven't made their selection.
+\paragraph{Vulnerability categories} Each scanner will scan for a particular bug category. All the categories are listed in Table~\ref{tab:bug-categories}. To make sure that every category is touched, we limit the number of groups working in each category as mentioned in Table~\ref{tab:bug-categories}. At 22.00 PM on Tuesday 17 March, there will be a post in the IVLE forum for you to select the category you want to work on. This will be a first-come first-serve rule, the group makes a reply to that post earlier will get their desired category. Each group should make only one reply to select their category. Invalid entries (entries which exceed the specified limit) will not be considered. At 23:30 PM that day, the TA will finalize the bug category distribution. The remaining categories will be randomly assigned to the groups who haven't made their selection.
 
-\paragraph{Benchmark creation} A public benchmark will be given to you so that you can test your scanner. However, we expect you to create your own benchmark while building the scanner. The benckmark can be constructed as simple as the testcases we gave you in Assignment 2, or can be the real bugs reported in real web applications.
+\paragraph{Benchmark creation} A public benchmark will be given to you so that you can test your scanner. However, we expect you to create your own benchmark while building the scanner. The benchmark can be as simple as the testcases we gave you in Assignment 2, or can be real bugs reported in real web applications.
 We will ask you to submit your benchmark along with your scanner. It will be graded and account for 5 points.
 
 \begin{table}[h]
@@ -90,23 +90,24 @@ Category & \specialcell{Reflected\\ XSS} & \specialcell{Persistent\\ XSS} & \spe
 \section{Scanner structure}
 This is a general description about the structure of a scanner. 
 You should follow all the steps below while building your scanner. 
-Typically, the scanner will consist of 4 phases. The communication between these phases \underline{{\em must} be via files in {\tt JSON} format}.
+The scanner will consist of 4 phases. The communication between these phases \underline{{\em must} be via files in {\tt JSON} format}.
 
 \subsection{Crawling and identification of Injection points in web pages}
 \paragraph{Crawling web pages} The aim of this phase is to find out as many pages in the web application as possible. The crawling function takes in the start URL, the depth to crawl (optional), maximum number of URLs (optional).
-You can use open source crawlers like \href{http://scrapy.org/}{{\tt Scrapy}} or implement your own crawler. We encourage you to use {\tt Scrapy}, so that you can later on discuss on forum about how to do things with {\tt Scrapy}. We also prepare a simple {\tt Scrapy} script to crawl one example in the code base that we give you. You can consider it as one reference to get used to with {\tt Scrapy}. Nonetheless, there are tons of helpful tutorials about how to use Scrapy on the Internet.
+You can use open source crawlers like \href{http://scrapy.org/}{{\tt Scrapy}} or implement your own crawler. We encourage you to use {\tt Scrapy}, so that you can later on discuss on the forum about how to do things with {\tt Scrapy}. We also prepare a simple {\tt Scrapy} script to crawl one example in the code base for you. You can consider it as one reference to get started with {\tt Scrapy}. Nonetheless, there are tons of helpful tutorials about how to use Scrapy on the Internet.
 
 Remember that most of the pages in your application are only available to the scanner once you log in. You are given the account credentials for all the apps in the {\bf readme} file in the VM. Use this information to configure your crawler to scan for more pages after logging in. The more pages you are able to crawl for, the more vulnerabilities your scanner will be able to find.
 
 \paragraph{Identification of Injection points}
-After crawling a web page, you will need to identify injection points in each of the downloaded pages. An attacker can inject his attack vector at numerous points. Some of the injection points are (but are not limited to):
+After crawling a web page, you will need to identify injection points in each of the crawled pages. An attacker can inject his attack vector at numerous points. Some of the injection points are (but are not limited to):
 	\begin{itemize}
 	\item GET requests parameters
 	\item POST requests parameters
 	\item Request Headers (including cookies)
 	\end{itemize}
 
-The json output file, which will be used in the subsequent phases will look similar to the one given below:
+The output of this phase is a json file containing the pages and the injection points found in the page.
+This will be used in the subsequent phases will look similar to the one given below:
 \begin{lstlisting}[language=json,firstnumber=1]
 [{
 	"/page.html": [{
@@ -129,14 +130,14 @@ This phase should return a set of exploits to be tested. Pass information that y
 \end{lstlisting}
 
 \subsection{Payload Injection}
-The next step would be to inject every payload generated in Phase 2 into your injection points discovered in Phase 1. After each injection, you need to find out which of these (injection point, payload) pairs are exploitable. The output of this phase would be the list of confirmed exploits in the website. The output format for each vulnerability is described in Section~\ref{exploit-format} of the handout. A sample output for the SQL Injection scanner will look like this.
+The next step would be to inject every payload generated in Phase 2 into your injection points discovered in Phase 1. After each injection, you need to find out which of these (injection point, payload) pairs are exploitable. The output of this phase would be the list of \textbf{confirmed} exploits in the website. The output format for each vulnerability is described in Section~\ref{exploit-format} of the handout. A sample output for the SQL Injection scanner will look like this.
 \begin{lstlisting}[language=json,firstnumber=1]
 [{
 	"http://example.com/index.html" : [{
 		method: GET/POST,
 		params: 
 			[
-			key: param1
+			key: param1,
 			value: ' or '1'='1
 			]
 		}]
@@ -145,7 +146,7 @@ The next step would be to inject every payload generated in Phase 2 into your in
 
 \subsection{Generate automated verification script} 
 For each of the exploits you have printed in Phase 3, you need to generate an
-automated script which proves that the exploit is indeed vulnerable. Typically, you will have to demonstrate that you can achieve the scope of exploit for each category mentioned in Section~\ref{exploit-format}. For some category, we will discuss more on how to demonstrate the exploit. The
+automated script which proves that the exploit is indeed vulnerable. Typically, you will have to demonstrate that you can achieve the scope of exploit for the category you have chosen in Section~\ref{exploit-format}. For some categories, we will discuss more on how to demonstrate the exploit. The
 generated scripts from this phase should be similar to the scripts that you
 generated for the previous assignment. You can consider using
 \href{http://www.seleniumhq.org/}{Selenium} to make all the process automated.
