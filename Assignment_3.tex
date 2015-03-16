@@ -148,11 +148,11 @@ The next step would be to inject every payload generated in Phase 2 into your in
 For each of the exploits you have printed in Phase 3, you need to generate an
 automated script which proves that the exploit is indeed vulnerable. Typically, you will have to demonstrate that you can achieve the scope of exploit for the category you have chosen in Section~\ref{exploit-format}. For some categories, we will discuss more on how to demonstrate the exploit. The
 generated scripts from this phase should be similar to the scripts that you
-generated for the previous assignment. You can consider using
+generated for the previous assignment. Consider using
 \href{http://www.seleniumhq.org/}{Selenium} to make all the process automated.
-Failing to automate any component in this script will not get full grade.
+Failing to automate any component in this script will not get you the full grade.
 
-This phase is also to make sure that your scanner will not report false positive exploits --- exploits that are not exploitable. We will deduct up to 5 points if your scanner raises too many false positive reports.
+This phase is also to make sure that your scanner does not report any false positive exploits --- exploits that are not exploitable. We will deduct up to 5 points if your scanner raises too many false positives.
 
 
 \section{Grading}
@@ -161,7 +161,7 @@ This assignment accounts for 50\% (50 points) of your final grade. The following
 	\item Did you follow the given code structure? [{\bf 10 points}] --- TA will check the output format of each of the 4 steps manually.
 	\item How many bugs does your scanner automatically find on the given (public) benchmark? [{\bf 10 points}]
 	\item Additional benchmark/testcases that you created to test/show the strengths of your scanner? [{\bf 5 points}]
-	\item How many bugs does your scanner find from our hidden benchmark? [{\bf 20 points}]
+	\item How many bugs does your scanner finds from our hidden benchmark? [{\bf 20 points}]
 	\item Does your scanner raise false positives on our hidden benchmark [{\bf 5 points}] if no FP raised. We deduct 0.5 points for each FP raised.
 	\end{itemize}
 
@@ -210,10 +210,10 @@ The password for accessing the FTP is \texttt{group0}. Please fetch the VM in th
 \begin{lstlisting}[language=json,firstnumber=1]
 [{
 	"http://example.com/index.html" : [{
-		method: GET/POST
+		method: GET/POST,
 		params: 
 		[
-			key: param1
+			key: param1,
 			value: attack1
 		]
 	}]
@@ -230,7 +230,7 @@ The password for accessing the FTP is \texttt{group0}. Please fetch the VM in th
 	method: GET/POST,
 	params: 
 	[
-		key: param1
+		key: param1,
 		value: attack1
 	],
 	reflected_page: "http://example.com/page2.html"
@@ -238,19 +238,19 @@ The password for accessing the FTP is \texttt{group0}. Please fetch the VM in th
 \end{lstlisting}
 
 \subsection{CSRF} 
-\paragraph{Scope} Carry out a sensitive operation on behalf of other users by exploiting the lack of proper csrf token/mechanism. Sensitive operation is the operation operated on sensitive data and it is left to you to define which data is sensitive. Note that normal form can be unprotected by CSRF if there is nothing sensitive that can be achieved by submitting that form.
+\paragraph{Scope} Carry out a sensitive operation on behalf of other users by exploiting the lack of proper csrf token or other CSRF protection mechanisms. Sensitive operation is the operation operated on sensitive data and it is left to you to define which data is sensitive. Note that normal form can be unprotected by CSRF if there is nothing sensitive that can be achieved by submitting that form.
 
 
 \paragraph{Final exploit format} You will need to output the page and name of the sensitive form which is vulnerable to CSRF attack. The format of the output should look similar to this.
 
 \begin{lstlisting}[language=json,firstnumber=1]
 [{
-	url: "http://example.com/page.html"
+	url: "http://example.com/page.html",
 	name: "form1"
 }]
 \end{lstlisting}
 
-\paragraph{Exploit verification} We leave how to validate the attack open ended and let the group decide. One possible approach is to demonstrate that user A can submit a sensitive form on behalf of B, then show the information changed from B perspective before and after A submits the form.
+\paragraph{Exploit verification} We leave how to validate the attack as open ended and let the group decide. One possible approach is to demonstrate that user A can submit a sensitive form on behalf of B, then show the information changed from B's perspective before and after A submits the form.
 
 \subsection{SQL Injection}
 % // Extra points for finding out SQL Injections using differential timing / response analysis
@@ -264,7 +264,7 @@ The password for accessing the FTP is \texttt{group0}. Please fetch the VM in th
 		method: GET/POST,
 		params: 
 		[
-			key: param1
+			key: param1,
 			value: ' or '1'='1
 		]
 	}]
@@ -274,17 +274,17 @@ The password for accessing the FTP is \texttt{group0}. Please fetch the VM in th
 % There are a huge overlap between SSCI and DT, thus we consider the two categories as one. Your scanner should look for bugs in both categories.
 
 \subsection{Server Side Code Injection}
-This category includes all variants of Local file inclusion, remote file inclusion, PHP code injection attacks.
+This category includes all variants of Local file inclusion, remote file inclusion and PHP code injection attacks.
 
 \paragraph{Scope}
-Inject a script (through LFI / RFI / Php code injection) which echoes the string ``pawned" into the page
+Inject a script (through LFI / RFI / Php code injection) which echoes the string ``pawned" into the response.
 
 \paragraph{Final exploit format\\}
 
 \begin{lstlisting}[language=json,firstnumber=1]
 [{
 	"http://example.com/index.html" : [{
-		method: GET/POST
+		method: GET/POST,
 		params: 
 		[
 			key: param1,
@@ -296,13 +296,13 @@ Inject a script (through LFI / RFI / Php code injection) which echoes the string
 
 \subsection{Directory traversals}
 \paragraph{Scope}
-Page should have the contents of the /etc/passwd file included in the response
+Page should have the contents of the /etc/passwd file included in the response.
 
 \paragraph{Final exploit format\\}
 \begin{lstlisting}[language=json,firstnumber=1]
 [{
 	"http://example.com/index.html" : [{
-		method: GET/POST
+		method: GET/POST,
 		params: 
 		[
 			key: param1,
