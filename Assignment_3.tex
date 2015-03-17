@@ -67,14 +67,14 @@
 
 \section{Assignment overview}
 
-\paragraph{Bug scanner} You are expected to implement a scanner to scan all the web vulnerabilities belonging to one particular category. The scanner should be implemented on your own, from scratch. You are restricted to use only utility libraries which have the \underline{\href{http://opensource.org/licenses/MIT}{MIT} or \href{http://en.wikipedia.org/wiki/BSD_licenses}{BSD} license}. Specifically, the core logic of the scanner needs to be implemented by you.
+\paragraph{Bug scanner} You are expected to implement a scanner to scan all the web vulnerabilities belonging to one particular category. The scanner should be implemented on your own, from scratch. You are restricted to use only utility libraries which have the \underline{\href{http://opensource.org/licenses/MIT}{MIT} or \href{http://en.wikipedia.org/wiki/BSD_licenses}{BSD} license}. Specifically, the core logic of the scanner needs to be implemented by you. Note that you {\bf will not have access} to the web site backend source code, or have any assumption about the server architecture, etc.
 
 \textit{Implementation Language:} \underline{Only {\tt Node.js} or {\tt Python}}.
 
-\paragraph{Vulnerability categories} Each scanner will scan for a particular bug category. All the categories are listed in Table~\ref{tab:bug-categories}. To make sure that every category is touched, we limit the number of groups working in each category as mentioned in Table~\ref{tab:bug-categories}. At 22.00 PM on Tuesday 17 March, there will be a post in the IVLE forum for you to select the category you want to work on. This will be a first-come first-serve rule, the group makes a reply to that post earlier will get their desired category. Each group should make only one reply to select their category. Invalid entries (entries which exceed the specified limit) will not be considered. At 23:30 PM that day, the TA will finalize the bug category distribution. The remaining categories will be randomly assigned to the groups who haven't made their selection.
+\paragraph{Vulnerability categories} Each scanner will scan for a particular bug category. All the categories are listed in Table~\ref{tab:bug-categories}. To make sure that every category is touched, we limit the number of groups working in each category as mentioned in Table~\ref{tab:bug-categories}. At 22.00 PM on Tuesday 17 March, there will be a post in the IVLE forum for you to select the category you want to work on. This will be a first-come first-serve rule, the group makes a reply to that post earlier will get their desired category. Each group should make only one reply to select their category. Invalid entries (entries which exceed the specified limit) will not be considered. At 23:00 PM that day, the TA will finalize the bug category distribution. The remaining categories will be randomly assigned to the groups who haven't made their selection.
 
 \paragraph{Benchmark creation} A public benchmark will be given to you so that you can test your scanner. However, we expect you to create your own benchmark while building the scanner. The benchmark can be as simple as the testcases we gave you in Assignment 2, or can be real bugs reported in real web applications.
-We will ask you to submit your benchmark along with your scanner. It will be graded and account for 5 points.
+We will ask you to submit your benchmark along with your scanner. It will be graded and account for 5 points. You are expected to have at least 10 new testcases for your own benchmark, with good coverages to your bug category.
 
 \begin{table}[h]
 \small
@@ -131,7 +131,7 @@ This will be used in the subsequent phases will look similar to the one given be
 	\item \textbf{Output}: a JSON file(s) of all possible payloads.
 \end{itemize}
 This phase is specific to your vulnerability category. These payloads will be injected in the injection points that you have identified in the previous phase. 
-This phase should return a set of exploits to be tested. Pass information that you think would be necessary for you to better choose the exploits you want to try out. For example, a SQL Injection scanner could take in information such as the Database type, version and the current server information to return the payloads (no point returning No-SQL payloads for a MYSQL Database). The output of this phase for a SQL Injection Scanner for a LAMP installation would be something like what is shown below
+This phase should return a set of exploits to be tested. Pass information that you think would be necessary for you to better choose the exploits you want to try out. For example, a SQL Injection scanner could take in information of all possible Database types, versions and the current server information to return the payloads. The output of this phase for a SQL Injection Scanner for a LAMP installation would be something like what is shown below
 
 \begin{lstlisting}[language=json,firstnumber=1]
 ["' or '1'='1", "your other payloads", ...]
@@ -162,7 +162,8 @@ The next step would be to inject every payload generated in Phase 2 into your in
 	\item \textbf{Output}: list of Selenium scripts to automate the validated exploit.
 \end{itemize}
 For each of the exploits you have printed in Phase 3, you need to generate an
-automated script which proves that the exploit is indeed vulnerable. Typically, you will have to demonstrate that you can achieve the scope of exploit for the category you have chosen in Section~\ref{exploit-format}. For some categories, we will discuss more on how to demonstrate the exploit. The
+automated script which proves that the exploit is indeed vulnerable. Typically, you will have to demonstrate that you can achieve the scope of exploit for the category you have chosen in Section~\ref{exploit-format}. 
+For some categories, we will discuss more on how to demonstrate the exploit. Nonetheless, we leave how to verify the exploit for the group to decide, you may not follow the instruction in Section~\ref{exploit-format} and come up with your own approach. The
 generated scripts from this phase should be similar to the scripts that you
 generated for the previous assignment. Consider using
 \href{http://www.seleniumhq.org/}{Selenium} to make all the process automated.
@@ -181,7 +182,7 @@ This assignment accounts for 50\% (50 points) of your final grade. The following
 	\item Does your scanner raise false positives on our hidden benchmark [{\bf 5 points}] if no FP raised. We deduct 0.5 points for each FP raised.
 	\end{itemize}
 
-More details on how the grading is conducted will be updated later.
+Note that we will run your scanner from the host machine to scan the benchmark from the VM. Thus, again, do not make any assumption about the code, database, etc. of the site that your scanner will scan.
 
 \section{Deliverables and Submission}
 \label{deliverables}
@@ -200,7 +201,7 @@ You are required to submit
 the course server so that you will be able to access it. To download 
 the resources via FTP, use the following URL: 
 \href{ftp://group0@andromeda.d2.comp.nus.edu.sg}{\tt ftp://group0@andromeda.d2.comp.nus.edu.sg.}
-The password for accessing the FTP is \texttt{group0}. Please fetch the VM in the folder {\tt Assignment\_3}. A proper description of the VM and benchmark can be found in that folder also.
+The password for accessing the FTP is \texttt{group0}. Please fetch the VM in the folder {\tt Assignment\_3}. A proper description of the VM and benchmark can be found in that folder also. The {\tt md5} checksum of the zip file is {\tt 71482fbdc62685c9a5fb6b45e5ba53a5}
 
 \paragraph{Code template} A sample crawler code snippet in {\tt Python} can be fetched from this \href{https://github.com/Dexter-JS/Scanner}{repository}.
 
@@ -270,7 +271,7 @@ The password for accessing the FTP is \texttt{group0}. Please fetch the VM in th
 
 \subsection{SQL Injection}
 % // Extra points for finding out SQL Injections using differential timing / response analysis
-\paragraph{Scope} Output a database error message to the user's screen by injecting a SQL syntax error query.
+\paragraph{Scope} Inject a SQL query to the database and return the payload to the user.
 
 \paragraph{Final exploit format} Your output for phase 3 should look similar to this.
 
@@ -286,6 +287,8 @@ The password for accessing the FTP is \texttt{group0}. Please fetch the VM in th
 	}]
 }]
 \end{lstlisting}
+
+\paragraph{Verification} We leave it to the group to decide how to verify if the attack works. Some possible approaches include injecting an SQL syntax error query to get the error payload back (but some app will truncate the error message, so you won't see it), or injecting a SQL sleep command (or blind SQL injection) to slow down the server. You are expected to find a proper way to verify your exploit.
 % \subsection{Server Side Code Injection \& Directory Traversals}
 % There are a huge overlap between SSCI and DT, thus we consider the two categories as one. Your scanner should look for bugs in both categories.
 
@@ -355,6 +358,9 @@ You are expected to get the cookie of a logged in user. Your exploit should rais
 		\item Predictable Cookies
 	\end{itemize}
 
+Note that you can steal cookies by exploiting other vulnerabilities, e.g., XSS bugs, however it will not be counted as cookie management bugs but XSS bugs. In general, the bug classification will be based only on the entry bug. 
+You are allowed to use network attack, e.g., package sniffing, MITM, to steal/fix the cookies.
+
 \paragraph{Final exploit format}
 You need to report the page and the name of the cookie which makes the app vulnerable to any of the above mentioned attacks (the session cookie) and the page on which it is found. Note that you only need to report each cookie only once. For example, if the same session cookie is found on multiple pages of the application, you only need to report each cookie once. 
 
@@ -371,10 +377,11 @@ You need to report the page and the name of the cookie which makes the app vulne
 \end{lstlisting}
 
 \paragraph{Verification}
-The exploit script should be a selenium script which
+The exploit script should be a Selenium script which
 \begin{enumerate}
-\item Automates the login of the victim (you can use the script that has been provided to you in Phase 1)
-\item Performs the attack as the attacker (the attack can belong to any of the above 3 sub-categories)
-\item Logs in as the victim or fix the session for the victim
+	\item Automates the login of the victim (you can use the script that has been provided to you in Phase 1)
+	\item Performs the attack as the attacker (the attack can belong to any of the above 3 sub-categories)
+	\item Logs in as the victim or fix the session for the victim
 \end{enumerate}
+
 \end{document}
